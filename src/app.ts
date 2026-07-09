@@ -4,6 +4,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import { env } from './config/env';
+import { errorMiddleware } from './shared/middlewares/error.middleware';
+import { notFoundMiddleware } from './shared/middlewares/not-found.middleware';
 
 export const app = express();
 
@@ -22,3 +24,6 @@ app.get('/api/health', (_request, response) => {
     timestamp: new Date().toISOString()
   });
 });
+
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);
