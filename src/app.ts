@@ -1,16 +1,18 @@
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
-import morgan from 'morgan';
 
 import { env } from './config/env';
 import { errorMiddleware } from './shared/middlewares/error.middleware';
 import { notFoundMiddleware } from './shared/middlewares/not-found.middleware';
 import { requestIdMiddleware } from './shared/middlewares/request-id.middleware';
+import { requestLoggerMiddleware } from './shared/middlewares/request-logger.middleware';
 
 export const app = express();
 
 app.use(requestIdMiddleware);
+
+app.use(requestLoggerMiddleware);
 
 app.use(helmet());
 
@@ -19,8 +21,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
-app.use(morgan('dev'));
 
 app.get('/api/health', (request, response) => {
   response.status(200).json({
