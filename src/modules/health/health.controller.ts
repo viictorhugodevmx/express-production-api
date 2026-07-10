@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 
 import { env } from '../../config/env';
+import { AppError } from '../../shared/errors/app-error';
 
 export function healthController(request: Request, response: Response): void {
   response.status(200).json({
@@ -26,4 +27,12 @@ export function readinessController(request: Request, response: Response): void 
     },
     timestamp: new Date().toISOString()
   });
+}
+
+export function controlledErrorController(): void {
+  throw new AppError(
+    'Controlled test error',
+    400,
+    'CONTROLLED_TEST_ERROR'
+  );
 }
