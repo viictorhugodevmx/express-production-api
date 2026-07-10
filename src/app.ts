@@ -3,6 +3,7 @@ import express from 'express';
 import helmet from 'helmet';
 
 import { env } from './config/env';
+import { healthRoutes } from './modules/health/health.routes';
 import { errorMiddleware } from './shared/middlewares/error.middleware';
 import { notFoundMiddleware } from './shared/middlewares/not-found.middleware';
 import { globalRateLimitMiddleware } from './shared/middlewares/rate-limit.middleware';
@@ -25,15 +26,7 @@ app.use(globalRateLimitMiddleware);
 
 app.use(express.json());
 
-app.get('/api/health', (request, response) => {
-  response.status(200).json({
-    status: 'ok',
-    app: env.appName,
-    environment: env.nodeEnv,
-    requestId: request.id,
-    timestamp: new Date().toISOString()
-  });
-});
+app.use('/api/health', healthRoutes);
 
 app.use(notFoundMiddleware);
 
