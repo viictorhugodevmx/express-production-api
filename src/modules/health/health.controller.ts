@@ -36,3 +36,18 @@ export function controlledErrorController(): void {
     'CONTROLLED_TEST_ERROR'
   );
 }
+
+export function compressionTestController(
+  request: Request,
+  response: Response
+): void {
+  response.status(200).json({
+    requestId: request.id,
+    total: 500,
+    items: Array.from({ length: 500 }, (_, index) => ({
+      id: index + 1,
+      name: `Production API Item ${index + 1}`,
+      active: true
+    }))
+  });
+}
