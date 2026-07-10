@@ -10,6 +10,7 @@ import { notFoundMiddleware } from './shared/middlewares/not-found.middleware';
 import { globalRateLimitMiddleware } from './shared/middlewares/rate-limit.middleware';
 import { requestIdMiddleware } from './shared/middlewares/request-id.middleware';
 import { requestLoggerMiddleware } from './shared/middlewares/request-logger.middleware';
+import { requestTimeoutMiddleware } from './shared/middlewares/request-timeout.middleware';
 import { responseTimeMiddleware } from './shared/middlewares/response-time.middleware';
 
 export const app = express();
@@ -21,6 +22,8 @@ app.use(requestIdMiddleware);
 app.use(responseTimeMiddleware);
 
 app.use(requestLoggerMiddleware);
+
+app.use(requestTimeoutMiddleware);
 
 app.use(helmet());
 

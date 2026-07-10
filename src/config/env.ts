@@ -21,8 +21,10 @@ function getNumberEnv(name: string, defaultValue: number): number {
 
   const parsedValue = Number(rawValue);
 
-  if (!Number.isFinite(parsedValue)) {
-    throw new Error(`Environment variable ${name} must be a valid number`);
+  if (!Number.isFinite(parsedValue) || parsedValue <= 0) {
+    throw new Error(
+      `Environment variable ${name} must be a positive number`
+    );
   }
 
   return parsedValue;
@@ -34,6 +36,13 @@ export const env = {
   appName: getRequiredEnv('APP_NAME'),
   corsOrigin: process.env.CORS_ORIGIN ?? '*',
   jsonBodyLimit: process.env.JSON_BODY_LIMIT ?? '100kb',
-  rateLimitWindowMs: getNumberEnv('RATE_LIMIT_WINDOW_MS', 60000),
-  rateLimitMaxRequests: getNumberEnv('RATE_LIMIT_MAX_REQUESTS', 100)
+  requestTimeoutMs: getNumberEnv('REQUEST_TIMEOUT_MS', 5000),
+  rateLimitWindowMs: getNumberEnv(
+    'RATE_LIMIT_WINDOW_MS',
+    60000
+  ),
+  rateLimitMaxRequests: getNumberEnv(
+    'RATE_LIMIT_MAX_REQUESTS',
+    100
+  )
 };
