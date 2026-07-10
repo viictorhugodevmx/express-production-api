@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import { env } from './config/env';
 import { errorMiddleware } from './shared/middlewares/error.middleware';
 import { notFoundMiddleware } from './shared/middlewares/not-found.middleware';
+import { globalRateLimitMiddleware } from './shared/middlewares/rate-limit.middleware';
 import { requestIdMiddleware } from './shared/middlewares/request-id.middleware';
 import { requestLoggerMiddleware } from './shared/middlewares/request-logger.middleware';
 
@@ -19,6 +20,8 @@ app.use(helmet());
 app.use(cors({
   origin: env.corsOrigin
 }));
+
+app.use(globalRateLimitMiddleware);
 
 app.use(express.json());
 
