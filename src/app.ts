@@ -1,9 +1,9 @@
-import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 
 import { env } from './config/env';
 import { healthRoutes } from './modules/health/health.routes';
+import { corsMiddleware } from './shared/middlewares/cors.middleware';
 import { errorMiddleware } from './shared/middlewares/error.middleware';
 import { notFoundMiddleware } from './shared/middlewares/not-found.middleware';
 import { globalRateLimitMiddleware } from './shared/middlewares/rate-limit.middleware';
@@ -18,13 +18,13 @@ app.use(requestLoggerMiddleware);
 
 app.use(helmet());
 
-app.use(cors({
-  origin: env.corsOrigin
-}));
+app.use(corsMiddleware);
 
 app.use(globalRateLimitMiddleware);
 
-app.use(express.json());
+app.use(express.json({
+  limit: env.jsonBodyLimit
+}));
 
 app.use('/api/health', healthRoutes);
 

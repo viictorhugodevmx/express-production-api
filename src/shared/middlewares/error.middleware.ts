@@ -4,12 +4,39 @@ import { env } from '../../config/env';
 import { AppError } from '../errors/app-error';
 import { logger } from '../utils/logger';
 
+interface PayloadTooLargeError extends Error {
+  type?: string;
+  status?: number;
+}
+
 export const errorMiddleware: ErrorRequestHandler = (
   error,
   request,
   response,
   _next
 ) => {
+  const payloadError = error as PayloadTooLargeError;
+
+  if (
+    payloadError.type === 'entity.too.large'
+    || payloadError.status === 413
+  ) {
+    logger.warn('Request body exceeded allowed size', {
+      requestId: request.id,
+      method: request.method,
+      path: request.originalUrl,
+      statusCode: 413
+    });
+
+    response.status(413).json({
+      message: 'Request body is too large',
+      code: 'PAYLOAD_TOO_LARGE',
+      requestId: request.id
+    });
+
+    return;
+  }
+
   if (error instanceof AppError) {
     logger.warn('Controlled application error', {
       requestId: request.id,

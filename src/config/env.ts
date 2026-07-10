@@ -33,6 +33,7 @@ export const env = {
   port: getNumberEnv('PORT', 3003),
   appName: getRequiredEnv('APP_NAME'),
   corsOrigin: process.env.CORS_ORIGIN ?? '*',
+  jsonBodyLimit: process.env.JSON_BODY_LIMIT ?? '100kb',
   rateLimitWindowMs: getNumberEnv('RATE_LIMIT_WINDOW_MS', 60000),
   rateLimitMaxRequests: getNumberEnv('RATE_LIMIT_MAX_REQUESTS', 100)
 };
