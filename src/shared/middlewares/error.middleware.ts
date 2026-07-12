@@ -4,7 +4,7 @@ import { env } from '../../config/env';
 import { AppError } from '../errors/app-error';
 import { logger } from '../utils/logger';
 
-interface PayloadTooLargeError extends Error {
+interface HttpParserError extends Error {
   type?: string;
   status?: number;
 }
@@ -15,11 +15,34 @@ export const errorMiddleware: ErrorRequestHandler = (
   response,
   _next
 ) => {
-  const payloadError = error as PayloadTooLargeError;
+  const parserError = error as HttpParserError;
 
   if (
-    payloadError.type === 'entity.too.large'
-    || payloadError.status === 413
+    parserError.type === 'entity.parse.failed'
+    || (
+      parserError.status === 400
+      && error instanceof SyntaxError
+    )
+  ) {
+    logger.warn('Request body contains invalid JSON', {
+      requestId: request.id,
+      method: request.method,
+      path: request.originalUrl,
+      statusCode: 400
+    });
+
+    response.status(400).json({
+      message: 'Request body contains invalid JSON',
+      code: 'INVALID_JSON',
+      requestId: request.id
+    });
+
+    return;
+  }
+
+  if (
+    parserError.type === 'entity.too.large'
+    || parserError.status === 413
   ) {
     logger.warn('Request body exceeded allowed size', {
       requestId: request.id,
@@ -66,7 +89,9 @@ export const errorMiddleware: ErrorRequestHandler = (
     path: request.originalUrl,
     statusCode: 500,
     error: errorMessage,
-    stack: error instanceof Error ? error.stack : undefined
+    stack: error instanceof Error
+      ? error.stack
+      : undefined
   });
 
   response.status(500).json({

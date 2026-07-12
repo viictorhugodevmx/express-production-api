@@ -4,13 +4,17 @@ import {
   compressionTestController,
   controlledErrorController,
   healthController,
+  jsonEchoController,
   readinessController,
   timeoutTestController
 } from './health.controller';
 
 export const healthRoutes = Router();
 
-healthRoutes.get('/', healthController);
+healthRoutes.get(
+  '/',
+  healthController
+);
 
 healthRoutes.get(
   '/readiness',
@@ -30,4 +34,9 @@ healthRoutes.get(
 healthRoutes.get(
   '/timeout-test',
   timeoutTestController
+);
+
+healthRoutes.post(
+  '/json-echo',
+  jsonEchoController
 );

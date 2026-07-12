@@ -78,3 +78,14 @@ export async function timeoutTestController(
     requestId: request.id
   });
 }
+
+export function jsonEchoController(
+  request: Request,
+  response: Response
+): void {
+  response.status(200).json({
+    message: 'JSON received successfully',
+    requestId: request.id,
+    body: request.body
+  });
+}
